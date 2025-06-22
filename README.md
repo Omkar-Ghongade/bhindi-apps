@@ -1,274 +1,267 @@
-# Bhindi Agent Starter Kit
+# Bhindi Agent Starter Kit - Architecture Diagram
 
-A TypeScript-based agent starter kit that demonstrates both **public calculator tools** and **authenticated GitHub tools**. Perfect for learning agent development with the [Bhindi.io](https://bhindi.io) specification.
+## System Overview
 
-# What is Bhindi?
-Bhindi lets you talk to your apps like you talk to a friend.
-Bhindi supports 100+ integrations and is the easiest way to build AI agents.
+This architecture diagram focuses on the three main tool categories: **UPI Tools**, **Cashfree Tools**, and **Bhindi Tools** within the Bhindi Agent Starter Kit.
 
-Check a list of integrations available at [Bhindi Agents Directory](https://directory.bhindi.io/)
+## Architecture Components
 
-## 📚 Documentation
-
-For comprehensive documentation on building agents, visit the [Bhindi Documentation](https://github.com/upsurgeio/bhindi-docs).
-
-## 🎯 What This Starter Kit Demonstrates
-
-This starter kit teaches you how to build agents with:
-- **Public tools** (Calculator - no authentication required)
-- **Authenticated tools** (GitHub - Bearer token required)
-- **Mixed authentication patterns** in a single agent
-- **Proper parameter validation** using JSON Schema
-- **Advanced features** like `confirmationRequired` and `credits`
-- **Standardized response formats** following agent specification
-
-## ✨ Features
-
-### Calculator Tools (No Authentication)
-- **8 mathematical operations**: Basic arithmetic, power, square root, percentage, factorial
-- **Parameter validation**: Proper error handling for invalid inputs
-- **Confirmation required**: Demonstrates user confirmation for certain operations
-- **Credits system**: Shows cost-based tool execution
-
-### GitHub Tools (Authentication Required)
-- **Repository listing**: List user's GitHub repositories with Bearer token
-- **Simple REST API**: Uses standard fetch calls (no heavy dependencies)
-- **Authentication demonstration**: Shows how to handle Bearer tokens
-
-### Development Features
-- **Full TypeScript support** with strict typing
-- **Comprehensive testing** with Jest
-- **ESLint + Prettier** for code quality
-- **JSON Schema validation** for parameters
-- **Standardized error handling**
-
-## 🚀 Available Tools
-
-### Calculator Tools
-
-| Tool | Description | Special Features |
-|------|-------------|------------------|
-| `add` | Add two numbers | Basic operation |
-| `subtract` | Subtract two numbers | `confirmationRequired: true` |
-| `multiply` | Multiply two numbers | Basic operation |
-| `divide` | Divide two numbers | Error handling for division by zero |
-| `power` | Calculate a^b | Supports negative exponents |
-| `sqrt` | Square root | Error handling for negative inputs |
-| `percentage` | Calculate percentage | Handles decimal percentages |
-| `factorial` | Calculate factorial | `credits: 2`, `confirmationRequired: true` |
-| `countCharacter` | Count character occurrences in text | String manipulation |
-
-### GitHub Tools (Private - Auth Required)
-
-| Tool | Description | Authentication |
-|------|-------------|----------------|
-| `listUserRepositories` | List user's repositories | Bearer token required |
-
-## 📋 Quick Start
-
-### 1. Install Dependencies
-```bash
-npm install
+```mermaid
+graph LR
+    %% Client Layer
+    Client[Client Applications]
+    
+    %% API Gateway Layer
+    API[API Gateway<br/>Express.js Server]
+    
+    %% Controller Layer
+    Controller[AppController<br/>Tool Handler]
+    
+    %% Service Layer
+    subgraph "Service Layer"
+        CashfreeService[CashfreeService<br/>Payment Link Creation]
+        BhindiService[BhindiService<br/>Agent Operations]
+        SplitwiseService[SplitwiseService<br/>Expense Management]
+    end
+    
+    %% External APIs
+    subgraph "External APIs"
+        CashfreeAPI[Cashfree API<br/>Payment Gateway]
+        BhindiAPI[Bhindi API<br/>Agent Platform]
+        SplitwiseAPI[Splitwise API<br/>UPI Payments]
+    end
+    
+    %% Configuration
+    Config[tools.json<br/>Tool Definitions]
+    
+    %% Flow Connections
+    Client --> API
+    API --> Controller
+    Controller --> Config
+    Controller --> CashfreeService
+    Controller --> BhindiService
+    Controller --> SplitwiseService
+    CashfreeService --> CashfreeAPI
+    BhindiService --> BhindiAPI
+    
+    %% UPI Tools (via Splitwise)
+    SplitwiseService -.->|UPI Tools| SplitwiseAPI
+    
+    %% Styling
+    classDef clientClass fill:#e1f5fe
+    classDef apiClass fill:#f3e5f5
+    classDef serviceClass fill:#e8f5e8
+    classDef externalClass fill:#fff3e0
+    classDef configClass fill:#fce4ec
+    
+    class Client clientClass
+    class API,Controller apiClass
+    class CashfreeService,BhindiService,SplitwiseService serviceClass
+    class CashfreeAPI,BhindiAPI,SplitwiseAPI externalClass
+    class Config configClass
 ```
 
-### 2. Build the Project
-```bash
-npm run build
+## Tool Categories Breakdown
+
+### 1. UPI Tools (via Splitwise Service)
+```mermaid
+graph LR
+    subgraph "UPI Tools"
+        UPI1[getCurrentUser]
+        UPI2[getUser]
+        UPI3[getGroups]
+        UPI4[getGroup]
+        UPI5[createGroup]
+        UPI6[deleteGroup]
+        UPI7[getFriends]
+        UPI8[getFriend]
+        UPI9[createFriend]
+        UPI10[deleteFriend]
+        UPI11[getExpenses]
+        UPI12[getExpense]
+        UPI13[createExpense]
+        UPI14[getComments]
+    end
+    
+    subgraph "UPI Payment Integration"
+        Splitwise[Python UPI Script<br/>app.py]
+        UPI_Payment[UPI Payment Flow]
+    end
+    
+    UPI1 --> Splitwise
+    UPI2 --> Splitwise
+    UPI13 --> UPI_Payment
+    
+    classDef upiClass fill:#e3f2fd
+    class UPI1,UPI2,UPI3,UPI4,UPI5,UPI6,UPI7,UPI8,UPI9,UPI10,UPI11,UPI12,UPI13,UPI14 upiClass
 ```
 
-### 3. Start the Server
-```bash
-npm start
-# or for development with auto-reload:
-npm run dev
+### 2. Cashfree Tools
+```mermaid
+graph LR
+    subgraph "Cashfree Tools"
+        CF1[createPaymentLink]
+    end
+    
+    subgraph "Cashfree Features"
+        CF2[Payment Link Generation]
+        CF3[UPI Intent Flow]
+        CF4[Email/SMS Notifications]
+        CF5[Partial Payments]
+        CF6[Auto Reminders]
+    end
+    
+    subgraph "Cashfree API Integration"
+        CF_API[Cashfree Sandbox API]
+        CF_Headers[API Headers<br/>x-api-version<br/>x-client-id<br/>x-client-secret]
+    end
+    
+    CF1 --> CF2
+    CF2 --> CF3
+    CF2 --> CF4
+    CF2 --> CF5
+    CF2 --> CF6
+    CF2 --> CF_API
+    CF_API --> CF_Headers
+    
+    classDef cashfreeClass fill:#e8f5e8
+    class CF1,CF2,CF3,CF4,CF5,CF6 cashfreeClass
 ```
 
-### 4. Test the API
-```bash
-# Get available tools
-curl -X GET "http://localhost:3000/tools"
-
-# Test calculator (no auth needed)
-curl -X POST "http://localhost:3000/tools/add" \
-  -H "Content-Type: application/json" \
-  -d '{"a": 5, "b": 3}'
-
-# Test character counting
-curl -X POST "http://localhost:3000/tools/countCharacter" \
-  -H "Content-Type: application/json" \
-  -d '{"character": "s", "text": "strawberrry"}'
+### 3. Bhindi Tools
+```mermaid
+graph LR
+    subgraph "Bhindi Tools"
+        BH1[getChat]
+    end
+    
+    subgraph "Bhindi Features"
+        BH2[Chat History]
+        BH3[Message Retrieval]
+        BH4[Agent Communication]
+    end
+    
+    subgraph "Bhindi API Integration"
+        BH_API[Bhindi Agent API]
+        BH_Auth[Bearer Token Auth]
+    end
+    
+    BH1 --> BH2
+    BH1 --> BH3
+    BH1 --> BH4
+    BH4 --> BH_API
+    BH_API --> BH_Auth
+    
+    classDef bhindiClass fill:#fff3e0
+    class BH1,BH2,BH3,BH4 bhindiClass
 ```
 
-## 🧮 Usage Examples
+## Data Flow Architecture
 
-### Calculator Tools (No Authentication)
-
-```bash
-# Basic addition
-curl -X POST "http://localhost:3000/tools/add" \
-  -H "Content-Type: application/json" \
-  -d '{"a": 10, "b": 5}'
-
-# Division with error handling
-curl -X POST "http://localhost:3000/tools/divide" \
-  -H "Content-Type: application/json" \
-  -d '{"a": 10, "b": 0}'  # Will return error
-
-# Factorial (requires confirmation)
-curl -X POST "http://localhost:3000/tools/factorial" \
-  -H "Content-Type: application/json" \
-  -d '{"number": 5}'
-
-# Percentage calculation
-curl -X POST "http://localhost:3000/tools/percentage" \
-  -H "Content-Type: application/json" \
-  -d '{"percentage": 25, "of": 80}'
-
-# Character counting in text
-curl -X POST "http://localhost:3000/tools/countCharacter" \
-  -H "Content-Type: application/json" \
-  -d '{"character": "s", "text": "strawberrry"}'
-
-# Expected response:
-# {
-#   "success": true,
-#   "responseType": "mixed",
-#   "data": {
-#     "operation": "Count 's' in \"strawberrry\"",
-#     "result": 1,
-#     "message": "Calculated Count 's' in \"strawberrry\" = 1",
-#     "tool_type": "calculator"
-#   }
-# }
+```mermaid
+sequenceDiagram
+    participant Client
+    participant API as Express Server
+    participant Controller as AppController
+    participant Config as tools.json
+    participant Service as Service Layer
+    participant External as External APIs
+    
+    Client->>API: Tool Request
+    API->>Controller: Route to Controller
+    Controller->>Config: Load Tool Definition
+    Config-->>Controller: Tool Schema
+    
+    alt UPI Tool
+        Controller->>Service: SplitwiseService
+        Service->>External: Splitwise API
+        External-->>Service: UPI Response
+        Service-->>Controller: Processed Data
+    else Cashfree Tool
+        Controller->>Service: CashfreeService
+        Service->>External: Cashfree API
+        External-->>Service: Payment Link
+        Service-->>Controller: Link Data
+    else Bhindi Tool
+        Controller->>Service: BhindiService
+        Service->>External: Bhindi API
+        External-->>Service: Chat Data
+        Service-->>Controller: Messages
+    end
+    
+    Controller-->>API: Tool Response
+    API-->>Client: JSON Response
 ```
 
-### GitHub Tools (Authentication Required)
+## Authentication & Security
 
-```bash
-# List repositories (requires GitHub token)
-curl -X POST "http://localhost:3000/tools/listUserRepositories" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_GITHUB_TOKEN" \
-  -d '{"per_page": 5, "sort": "updated"}'
+```mermaid
+graph TB
+    subgraph "Authentication Methods"
+        Bearer[Bearer Token<br/>GitHub/Bhindi]
+        APIKey[API Key<br/>Splitwise]
+        CashfreeAuth[API Key + Secret<br/>Cashfree]
+    end
+    
+    subgraph "Security Headers"
+        Headers1[x-api-version]
+        Headers2[x-client-id]
+        Headers3[x-client-secret]
+        Headers4[Authorization]
+        Headers5[x-splitwise-key]
+    end
+    
+    Bearer --> Headers4
+    APIKey --> Headers5
+    CashfreeAuth --> Headers2
+    CashfreeAuth --> Headers3
+    CashfreeAuth --> Headers1
+    
+    classDef authClass fill:#ffebee
+    class Bearer,APIKey,CashfreeAuth authClass
 ```
 
-## 🔐 Authentication
-
-This agent demonstrates **hybrid authentication**:
-
-- **Calculator tools**: No authentication required (public)
-- **GitHub tools**: Bearer token authentication required (private)
-
-To learn more about authentication, check out the [Bhindi.io Agent Documentation](https://github.com/upsurgeio/bhindi-docs#-authentication)
-
-## 📚 API Endpoints
-
-- `GET /tools` - Get list of available tools (public)
-- `POST /tools/:toolName` - Execute a specific tool (auth depends on tool type)
-- `GET /health` - Health check endpoint (shows tool authentication requirements)
-- `GET /docs` - Swagger UI documentation (serves `public/swagger.json`)
-
-## 📖 Documentation & Examples
-
-- **[Complete API Examples](examples.md)** - Detailed usage examples for all tools with curl commands
-- **Swagger Documentation** - Available at `/docs` endpoint when server is running
-- **Postman Collection** - Import `Bhind-Agent-Starter.postman_collection.json` for easy testing
-
-## 🏗️ Project Structure
+## File Structure for Tool Categories
 
 ```
 src/
-├── config/
-│   └── tools.json          # Tool definitions with JSON Schema
 ├── controllers/
-│   └── appController.ts    # Handles both calculator & GitHub tools
+│   └── appController.ts          # Main tool handler
 ├── services/
-│   ├── calculatorService.ts # Mathematical operations
-│   └── githubService.ts     # Simple GitHub API calls
-├── routes/
-│   ├── toolsRoutes.ts      # GET /tools endpoint
-│   └── appRoutes.ts        # POST /tools/:toolName endpoint
-├── middlewares/
-│   ├── auth.ts             # Authentication utilities
-│   └── errorHandler.ts     # Error handling middleware
-├── types/
-│   └── agent.ts            # Response type definitions
-├── __tests__/
-│   └── calculatorService.test.ts # Comprehensive tests
-├── app.ts                  # Express app configuration
-└── server.ts              # Server entry point
+│   ├── cashfreeService.ts        # Cashfree payment operations
+│   ├── bhindiService.ts          # Bhindi agent operations
+│   └── splitwiseService.ts       # UPI tools (via Splitwise)
+├── config/
+│   └── tools.json               # Tool definitions & schemas
+└── app.py                       # Python UPI payment script
 ```
 
-## 🧪 Development
+## Key Features by Tool Category
 
-```bash
-# Run tests
-npm test
+### UPI Tools (14 tools)
+- **User Management**: getCurrentUser, getUser, getFriends, createFriend, deleteFriend
+- **Group Management**: getGroups, getGroup, createGroup, deleteGroup
+- **Expense Management**: getExpenses, getExpense, createExpense, getComments
+- **Payment Integration**: Python script for direct UPI payments via Splitwise
 
-# Run tests in watch mode
-npm run test:watch
+### Cashfree Tools (1 tool)
+- **Payment Link Creation**: createPaymentLink with comprehensive features
+- **UPI Intent Flow**: Support for UPI-based payments
+- **Notification System**: Email and SMS notifications
+- **Partial Payments**: Support for installment payments
+- **Auto Reminders**: Automated payment reminders
 
-# Lint code
-npm run lint
+### Bhindi Tools (1 tool)
+- **Chat Management**: getChat for retrieving conversation history
+- **Agent Communication**: Integration with Bhindi agent platform
+- **Message Retrieval**: Access to chat messages and responses
 
-# Format code
-npm run format
+## Technology Stack
 
-# Development server with auto-reload
-npm run dev
-```
-
-## 🎓 Learning Objectives
-
-This starter kit teaches you:
-
-1. **Agent Architecture**: How to structure tools and services
-2. **Mixed Authentication**: Public vs authenticated endpoints
-3. **Parameter Validation**: JSON Schema validation patterns
-4. **Error Handling**: Proper error responses and status codes
-5. **Response Formats**: Standardized success/error responses
-6. **Testing**: Comprehensive test coverage patterns
-7. **Tool Features**: `confirmationRequired`, `credits`, parameter types
-
-## 🔧 Advanced Features Demonstrated
-
-- **confirmationRequired**: `subtract` and `factorial` tools
-- **credits**: `factorial` tool costs 2 credits (expensive operation)
-- **Parameter validation**: Type checking and required parameters
-- **Enum parameters**: GitHub tool sort/direction options
-- **Default values**: Optional parameters with defaults
-- **Error handling**: Division by zero, negative square roots, etc.
-- **Mixed response types**: Different data structures for different tools
-
-## 🚀 Next Steps
-
-Once you understand this agent, you can:
-
-1. **Add more calculator functions**: Trigonometry, logarithms, etc.
-2. **Add more authenticated tools**: Twitter, Slack, database operations
-3. **Implement middleware authentication**: Global auth patterns
-4. **Add validation middleware**: Request/response validation
-5. **Add rate limiting**: Protect expensive operations
-6. **Add database integration**: Store calculation history
-
-## 📖 Agent Specification Compliance
-
-This starter follows the [Bhindi.io](https://bhindi.io) agent specification:
-- ✅ Required endpoints: `GET /tools`, `POST /tools/:toolName`
-- ✅ Standardized response formats: `BaseSuccessResponseDto`, `BaseErrorResponseDto`
-- ✅ JSON Schema parameter validation
-- ✅ Tool confirmation and credits system
-- ✅ Authentication patterns (Bearer tokens)
-- ✅ Proper error handling and status codes
-
-Perfect for learning how to build production-ready agents! 🎉
-
-## Need Help?
-
-We're here for you! You can reach out to us at:
-
-- **Email**: [info@bhindi.io](mailto:info@bhindi.io)
-- **Twitter/X**: [@bhindiai](https://x.com/bhindiai) for the latest updates
-- **Discord**: [Join our community](https://discord.gg/hSfTG33ymy)
-- **Documentation**: [Bhindi Docs](https://github.com/upsurgeio/bhindi-docs)
-- **Website**: [Bhindi.io](https://bhindi.io)
+- **Backend**: Node.js with Express.js
+- **Language**: TypeScript
+- **Payment Gateway**: Cashfree API (sandbox)
+- **UPI Integration**: Splitwise API (Python script)
+- **Agent Platform**: Bhindi API
+- **Configuration**: JSON-based tool definitions
+- **Authentication**: Multiple auth methods (Bearer, API Key, OAuth) 
