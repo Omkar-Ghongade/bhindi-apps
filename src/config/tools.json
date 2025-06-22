@@ -1,0 +1,490 @@
+[
+  {
+    "name": "add",
+    "description": "Add two numbers together",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "type": "number",
+          "description": "First number"
+        },
+        "b": {
+          "type": "number",
+          "description": "Second number"
+        }
+      },
+      "required": ["a", "b"]
+    }
+  },
+  {
+    "name": "subtract",
+    "description": "Subtract second number from first number (requires confirmation for demonstration)",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "type": "number",
+          "description": "Number to subtract from"
+        },
+        "b": {
+          "type": "number",
+          "description": "Number to subtract"
+        }
+      },
+      "required": ["a", "b"]
+    },
+    "confirmationRequired": true
+  },
+  {
+    "name": "multiply",
+    "description": "Multiply two numbers",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "type": "number",
+          "description": "First number"
+        },
+        "b": {
+          "type": "number",
+          "description": "Second number"
+        }
+      },
+      "required": ["a", "b"]
+    }
+  },
+  {
+    "name": "divide",
+    "description": "Divide first number by second number",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "type": "number",
+          "description": "Dividend (number to be divided)"
+        },
+        "b": {
+          "type": "number",
+          "description": "Divisor (number to divide by, cannot be zero)"
+        }
+      },
+      "required": ["a", "b"]
+    }
+  },
+  {
+    "name": "power",
+    "description": "Calculate a number raised to a power (a^b)",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "base": {
+          "type": "number",
+          "description": "Base number"
+        },
+        "exponent": {
+          "type": "number",
+          "description": "Exponent"
+        }
+      },
+      "required": ["base", "exponent"]
+    }
+  },
+  {
+    "name": "sqrt",
+    "description": "Calculate the square root of a number",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "number": {
+          "type": "number",
+          "description": "Number to calculate square root of (must be non-negative)"
+        }
+      },
+      "required": ["number"]
+    }
+  },
+  {
+    "name": "percentage",
+    "description": "Calculate percentage of a number (a% of b)",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "percentage": {
+          "type": "number",
+          "description": "Percentage value"
+        },
+        "of": {
+          "type": "number",
+          "description": "Number to calculate percentage of"
+        }
+      },
+      "required": ["percentage", "of"]
+    }
+  },
+  {
+    "name": "factorial",
+    "description": "Calculate factorial of a number (n!) - expensive operation for large numbers",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "number": {
+          "type": "number",
+          "description": "Non-negative integer to calculate factorial of (recommended max: 20)"
+        }
+      },
+      "required": ["number"]
+    },
+    "credits": 2,
+    "confirmationRequired": true
+  },
+  {
+    "name": "countCharacter",
+    "description": "Count the number of times a specific character appears in text",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "character": {
+          "type": "string",
+          "description": "Character to count (single character)"
+        },
+        "text": {
+          "type": "string",
+          "description": "Text to search in"
+        }
+      },
+      "required": ["character", "text"]
+    }
+  },
+  {
+    "name": "listUserRepositories",
+    "description": "List repositories for the authenticated GitHub user (requires Bearer token authentication)",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "per_page": {
+          "type": "number",
+          "description": "Number of repositories to return (1-100)",
+          "default": 10
+        },
+        "sort": {
+          "type": "string",
+          "description": "Sort repositories by",
+          "enum": ["created", "updated", "pushed", "full_name"],
+          "default": "updated"
+        },
+        "direction": {
+          "type": "string",
+          "description": "Sort direction",
+          "enum": ["asc", "desc"],
+          "default": "desc"
+        },
+        "type": {
+          "type": "string",
+          "description": "Repository type filter",
+          "enum": ["all", "owner", "public", "private", "member"],
+          "default": "owner"
+        }
+      }
+    }
+  },
+  {
+    "name": "getCurrentUser",
+    "description": "Get information about the current authenticated Splitwise user.",
+    "parameters": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "getUser",
+    "description": "Get information about a specific Splitwise user.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "description": "The ID of the user to retrieve."
+        }
+      },
+      "required": ["id"]
+    }
+  },
+  {
+    "name": "getGroups",
+    "description": "Get a list of the current user's groups in Splitwise.",
+    "parameters": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "getGroup",
+    "description": "Get information about a specific group in Splitwise.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "description": "The ID of the group to retrieve."
+        }
+      },
+      "required": ["id"]
+    }
+  },
+  {
+    "name": "createGroup",
+    "description": "Create a new group in Splitwise.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the new group."
+        },
+        "group_type": {
+          "type": "string",
+          "description": "The type of the group (e.g., 'trip', 'home', 'other')."
+        }
+      },
+      "required": ["name"]
+    }
+  },
+  {
+    "name": "deleteGroup",
+    "description": "Delete a group from Splitwise.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "description": "The ID of the group to delete."
+        }
+      },
+      "required": ["id"]
+    }
+  },
+  {
+    "name": "getFriends",
+    "description": "Get a list of the current user's friends in Splitwise.",
+    "parameters": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "getFriend",
+    "description": "Get information about a specific friend in Splitwise.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "description": "The ID of the friend to retrieve."
+        }
+      },
+      "required": ["id"]
+    }
+  },
+  {
+    "name": "createFriend",
+    "description": "Add a friend to Splitwise.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "user_email": {
+          "type": "string",
+          "description": "The email address of the user to add as a friend."
+        },
+        "user_first_name": {
+          "type": "string",
+          "description": "The first name of the user."
+        },
+        "user_last_name": {
+          "type": "string",
+          "description": "The last name of the user."
+        }
+      },
+      "required": ["user_email"]
+    }
+  },
+  {
+    "name": "deleteFriend",
+    "description": "Remove a friend from Splitwise.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "description": "The ID of the friend to remove."
+        }
+      },
+      "required": ["id"]
+    }
+  },
+  {
+    "name": "getExpenses",
+    "description": "Get a filtered list of expenses from Splitwise showing essential details: from (payer name), from_email, to (recipient name), to_email, amount, date, settled status, description, and currency. Email addresses are fetched from the Splitwise API for both users. The response is cleaned to show names instead of user IDs.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "group_id": {
+          "type": "number",
+          "description": "The ID of a group to filter expenses by."
+        },
+        "friend_id": {
+          "type": "number",
+          "description": "The ID of a friend to filter expenses by."
+        },
+        "limit": {
+          "type": "number",
+          "description": "The maximum number of expenses to return."
+        },
+        "offset": {
+          "type": "number",
+          "description": "The number of expenses to skip before returning results."
+        }
+      }
+    }
+  },
+  {
+    "name": "getExpense",
+    "description": "Get information about a specific expense in Splitwise.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "description": "The ID of the expense to retrieve."
+        }
+      },
+      "required": ["id"]
+    }
+  },
+  {
+    "name": "createExpense",
+    "description": "Create a new expense in Splitwise.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "cost": {
+          "type": "string",
+          "description": "The total cost of the expense."
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the expense."
+        },
+        "group_id": {
+          "type": "number",
+          "description": "The ID of the group this expense belongs to."
+        }
+      },
+      "required": ["cost", "description"]
+    }
+  },
+  {
+    "name": "getComments",
+    "description": "Get comments for a specific expense in Splitwise.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "expense_id": {
+          "type": "number",
+          "description": "The ID of the expense to get comments for."
+        }
+      },
+      "required": ["expense_id"]
+    }
+  },
+  {
+    "name": "createPaymentLink",
+    "description": "Create a payment link using Cashfree API.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "object",
+          "description": "API credentials and version for Cashfree API.",
+          "properties": {
+            "xApiVersion": { "type": "string", "description": "API version (e.g., '2022-09-01')" },
+            "apiKey": { "type": "string", "description": "API key for Cashfree account" },
+            "apiSecret": { "type": "string", "description": "API secret for Cashfree account" }
+          },
+          "required": ["x-Api-Version", "api-Key", "api-Secret"]
+        },
+        "params": {
+          "type": "object",
+          "description": "Payment link parameters as required by Cashfree API.",
+          "properties": {
+            "amount": { "type": "string", "description": "The amount for the payment link.", "default": "100" },
+            "currency": { "type": "string", "description": "The currency for the payment link (e.g., 'INR').", "default": "INR" },
+            "customer_email": { "type": "string", "description": "Email of the customer.", "default": "yashagarwal17102001@gmail.com" },
+            "customer_phone": { "type": "string", "description": "Phone number of the customer.", "default": "9999999999" },
+            "customer_details": {
+              "type": "object",
+              "description": "Details of the customer.",
+              "properties": {
+                "customer_email": { "type": "string", "description": "Email of the customer.", "default": "yashagarwal17102001@gmail.com" },
+                "customer_name": { "type": "string", "description": "Name of the customer.", "default": "Yash Agarwal" },
+                "customer_phone": { "type": "string", "description": "Phone number of the customer.", "default": "9999999999" }
+              },
+              "required": ["customer_email", "customer_name", "customer_phone"]
+            },
+            "link_amount": { "type": "number", "description": "The amount for the payment link.", "default": 100 },
+            "link_auto_reminders": { "type": "boolean", "description": "Enable automatic reminders.", "default": true },
+            "link_currency": { "type": "string", "description": "The currency for the payment link (e.g., 'INR').", "default": "INR" },
+            "link_expiry_time": { "type": "string", "description": "Expiry time for the link (e.g., '2025-07-14T15:04:05+05:30').", "default": "2025-07-14T15:04:05+05:30" },
+            "link_id": { "type": "string", "description": "Unique ID for the payment link.", "default": "payment_link_20250622_012845_yash_100rs" },
+            "link_meta": {
+              "type": "object",
+              "description": "Metadata for the link.",
+              "properties": {
+                "notify_url": { "type": "string", "description": "URL for notifications.", "default": "https://ee08e626ecd88c61c85f5c69c0418cb5.m.pipedream.net" },
+                "return_url": { "type": "string", "description": "URL to return to after payment.", "default": "https://www.cashfree.com/devstudio/thankyou" },
+                "upi_intent": { "type": "boolean", "description": "Enable UPI intent flow.", "default": false }
+              },
+              "required": ["notify_url", "return_url", "upi_intent"]
+            },
+            "link_minimum_partial_amount": { "type": "number", "description": "Minimum amount for partial payments.", "default": 100 },
+            "link_notes": {
+              "type": "object",
+              "description": "Additional notes for the payment link as key-value pairs.",
+              "default": { "key_1": "value_1", "key_2": "value_2" }
+            },
+            "link_notify": {
+              "type": "object",
+              "description": "Notification settings.",
+              "properties": {
+                "send_email": { "type": "boolean", "description": "Send email notification.", "default": true },
+                "send_sms": { "type": "boolean", "description": "Send SMS notification.", "default": false }
+              },
+              "required": ["send_email", "send_sms"]
+            },
+            "link_partial_payments": { "type": "boolean", "description": "Allow partial payments.", "default": true },
+            "link_purpose": { "type": "string", "description": "Purpose of the payment.", "default": "Payment request from Omkar to Yash" }
+          },
+          "required": [
+            "amount",
+            "currency",
+            "customer_email",
+            "customer_phone",
+            "customer_details",
+            "link_amount",
+            "link_auto_reminders",
+            "link_currency",
+            "link_expiry_time",
+            "link_id",
+            "link_meta",
+            "link_minimum_partial_amount",
+            "link_notes",
+            "link_notify",
+            "link_partial_payments",
+            "link_purpose"
+          ]
+        }
+      },
+      "required": ["token", "params"]
+    }
+  }
+]
